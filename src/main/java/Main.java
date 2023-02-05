@@ -49,8 +49,8 @@ public class Main {
     }
 
     private void validateNumbersFormat(String number1, String number2) throws NumberFormatException {
-        if (StringUtils.isNotEmpty(number1) && !Pattern.compile(NUMBER_VALIDATION_PATTERN).matcher(number1).matches()
-                || StringUtils.isNotEmpty(number2) && !Pattern.compile(NUMBER_VALIDATION_PATTERN).matcher(number2).matches()) {
+        if (StringUtils.isEmpty(number1) || !Pattern.compile(NUMBER_VALIDATION_PATTERN).matcher(number1).matches()
+                || StringUtils.isEmpty(number2) || !Pattern.compile(NUMBER_VALIDATION_PATTERN).matcher(number2).matches()) {
             throw new NumberFormatException("Number contains special symbols");
         }
     }
@@ -64,12 +64,12 @@ public class Main {
             fractionalSum = StringUtils.substring(fractionalSum, 1);
         }
         String intSum = parseAndAdd(int1WithLeadingZeroes, int2WithLeadingZeroes, lessSignificantDigit);
+        intSum = StringUtils.isNotEmpty(StringUtils.stripStart(intSum, ZERO_STRIP_CHAR)) ? StringUtils.stripStart(intSum, ZERO_STRIP_CHAR) : ZERO_STRIP_CHAR;
+        fractionalSum = StringUtils.stripEnd(fractionalSum, ZERO_STRIP_CHAR);
         if (fractionalSum.length() > 0) {
-            return StringUtils.stripStart(intSum, ZERO_STRIP_CHAR)
-                    + NUMBER_DELIMITER
-                    + StringUtils.stripEnd(fractionalSum, ZERO_STRIP_CHAR);
+            return intSum + NUMBER_DELIMITER + fractionalSum;
         }
-        return StringUtils.stripStart(intSum, ZERO_STRIP_CHAR);
+        return intSum;
     }
 
     private String parseAndAdd(String number1, String number2, int lessSignificantDigit) {

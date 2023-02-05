@@ -24,9 +24,10 @@ public class AddNumbersTest {
     }
 
     @Test
-    public void checkEmptySum_shouldReturnEmptiness() {
-        String result = main.addNumbers("", "");
-        Assert.assertEquals(result, "");
+    public void checkEmptySum_shouldThrowException() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            main.addNumbers("", "");
+        });
     }
 
     @Test
@@ -37,9 +38,61 @@ public class AddNumbersTest {
     }
 
     @Test
-    public void checkSumNumberFormatValidation_shouldThrowException() {
+    public void checkSumNumberFormatValidationComma_shouldThrowException() {
         Assert.assertThrows(NumberFormatException.class, () -> {
             main.addNumbers("123.4", "111,1");
+        });
+    }
+
+    @Test
+    public void checkSumNumberFormatValidationMultipleDot_shouldThrowException() {
+        Assert.assertThrows(NumberFormatException.class, () -> {
+            main.addNumbers("123.4", "1.111.111");
+        });
+    }
+
+    @Test
+    public void checkIntPlusFloatSum_shouldReturnFloat() {
+        String result = main.addNumbers("123.1", "123");
+        Assert.assertEquals(result, "246.1");
+    }
+
+    @Test
+    public void checkFractionalPartOfZero_shouldReturnInt() {
+        String result = main.addNumbers("123.0", "123");
+        Assert.assertEquals(result, "246");
+    }
+
+    @Test
+    public void checkIntPartOfZero_shouldCalculateSum() {
+        String result = main.addNumbers("0.1", "0.2");
+        Assert.assertEquals(result, "0.3");
+    }
+
+    @Test
+    public void checkZeroZero_shouldCalculateSum() {
+        String result = main.addNumbers("0.0", "1");
+        Assert.assertEquals(result, "1");
+    }
+
+    @Test
+    public void checkSumWithSeveralConsecutiveSpaces_shouldThrowException() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            main.addNumbers("12  34", "11 22");
+        });
+    }
+
+    @Test
+    public void checkSumWithLeadingSpace_shouldThrowException() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            main.addNumbers(" 12  34", "11 22");
+        });
+    }
+
+    @Test
+    public void checkSumWithFollowingSpace_shouldThrowException() {
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            main.addNumbers("12  34 ", "11 22");
         });
     }
 }
